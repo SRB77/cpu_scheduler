@@ -15,11 +15,11 @@ interface AlgorithmSelectorProps {
 }
 
 const algorithms = [
-  { value: 'fcfs', label: 'First Come First Served (FCFS)', icon: '📋' },
-  { value: 'sjf', label: 'Shortest Job First (SJF)', icon: '⚡' },
-  { value: 'roundRobin', label: 'Round Robin (RR)', icon: '🔄' },
-  { value: 'priority', label: 'Priority', icon: '⭐' },
-  { value: 'srtf', label: 'Shortest Remaining Time First (SRTF)', icon: '🎯' },
+  { value: 'fcfs', label: 'First Come First Served (FCFS)'},
+  { value: 'sjf', label: 'Shortest Job First (SJF)'},
+  { value: 'roundRobin', label: 'Round Robin (RR)' },
+  { value: 'priority', label: 'Priority'},
+  { value: 'srtf', label: 'Shortest Remaining Time First (SRTF)'},
 ];
 
 const algorithmDescriptions: Record<string, string> = {
