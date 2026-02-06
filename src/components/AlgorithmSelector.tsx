@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { cn } from '../utils/cn';
+
 
 interface AlgorithmSelectorProps {
   selectedAlgorithm: string;
@@ -58,7 +58,7 @@ export default function AlgorithmSelector({
           >
             {algorithms.map((algo) => (
               <option key={algo.value} value={algo.value}>
-                {algo.icon} {algo.label}
+                {algo.label}
               </option>
             ))}
           </Select>
