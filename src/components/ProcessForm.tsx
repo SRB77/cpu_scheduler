@@ -1,13 +1,19 @@
-import { useState, useEffect } from 'react';
-import type { ProcessInput } from '../types/process';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Button } from './ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import ColorPicker from './ColorPicker';
-import { generateRandomColor } from '../utils/colors';
-import { Plus } from 'lucide-react';
+import { useState, useEffect } from "react";
+import type { ProcessInput } from "../types/process";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import ColorPicker from "./ColorPicker";
+import { generateRandomColor } from "../utils/colors";
+import { Plus } from "lucide-react";
 
 interface ProcessFormProps {
   onAddProcess: (process: ProcessInput) => void;
@@ -15,10 +21,14 @@ interface ProcessFormProps {
   onEditComplete?: () => void;
 }
 
-export default function ProcessForm({ onAddProcess, editingProcess, onEditComplete }: ProcessFormProps) {
-  const [arrivalTime, setArrivalTime] = useState<string>('');
-  const [burstTime, setBurstTime] = useState<string>('');
-  const [priority, setPriority] = useState<string>('');
+export default function ProcessForm({
+  onAddProcess,
+  editingProcess,
+  onEditComplete,
+}: ProcessFormProps) {
+  const [arrivalTime, setArrivalTime] = useState<string>("");
+  const [burstTime, setBurstTime] = useState<string>("");
+  const [priority, setPriority] = useState<string>("");
   const [background, setBackground] = useState<string>(generateRandomColor());
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -27,15 +37,19 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
     if (editingProcess) {
       setArrivalTime(String(editingProcess.arrivalTime));
       setBurstTime(String(editingProcess.burstTime));
-      setPriority(editingProcess.priority !== undefined ? String(editingProcess.priority) : '');
+      setPriority(
+        editingProcess.priority !== undefined
+          ? String(editingProcess.priority)
+          : "",
+      );
       setBackground(editingProcess.background || generateRandomColor());
       setPopoverOpen(true);
     } else {
       // Reset form when not editing
       if (!popoverOpen) {
-        setArrivalTime('');
-        setBurstTime('');
-        setPriority('');
+        setArrivalTime("");
+        setBurstTime("");
+        setPriority("");
         setBackground(generateRandomColor());
         setErrors({});
       }
@@ -46,19 +60,19 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
     const newErrors: { [key: string]: string } = {};
 
     const arrival = parseFloat(arrivalTime);
-    if (arrivalTime === '' || isNaN(arrival) || arrival < 0) {
-      newErrors.arrivalTime = 'Arrival time must be a non-negative number';
+    if (arrivalTime === "" || isNaN(arrival) || arrival < 0) {
+      newErrors.arrivalTime = "Arrival time must be a non-negative number";
     }
 
     const burst = parseFloat(burstTime);
-    if (burstTime === '' || isNaN(burst) || burst <= 0) {
-      newErrors.burstTime = 'Burst time must be a positive number';
+    if (burstTime === "" || isNaN(burst) || burst <= 0) {
+      newErrors.burstTime = "Burst time must be a positive number";
     }
 
-    if (priority !== '') {
+    if (priority !== "") {
       const priorityNum = parseInt(priority);
       if (isNaN(priorityNum) || priorityNum < 0) {
-        newErrors.priority = 'Priority must be a non-negative integer';
+        newErrors.priority = "Priority must be a non-negative integer";
       }
     }
 
@@ -78,7 +92,7 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
       pid: processId,
       arrivalTime: parseFloat(arrivalTime),
       burstTime: parseFloat(burstTime),
-      priority: priority !== '' ? parseInt(priority) : undefined,
+      priority: priority !== "" ? parseInt(priority) : undefined,
       background,
     };
 
@@ -89,9 +103,9 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
       setPopoverOpen(false);
     } else {
       // Reset form
-      setArrivalTime('');
-      setBurstTime('');
-      setPriority('');
+      setArrivalTime("");
+      setBurstTime("");
+      setPriority("");
       setBackground(generateRandomColor());
       setErrors({});
       setPopoverOpen(false);
@@ -115,10 +129,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                 step="0.1"
                 min="0"
                 placeholder="0"
-                className={errors.arrivalTime ? 'border-destructive' : ''}
+                className={errors.arrivalTime ? "border-destructive" : ""}
               />
               {errors.arrivalTime && (
-                <p className="mt-1 text-sm text-destructive">{errors.arrivalTime}</p>
+                <p className="mt-1 text-sm text-destructive">
+                  {errors.arrivalTime}
+                </p>
               )}
             </div>
 
@@ -132,10 +148,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                 step="0.1"
                 min="0.1"
                 placeholder="1"
-                className={errors.burstTime ? 'border-destructive' : ''}
+                className={errors.burstTime ? "border-destructive" : ""}
               />
               {errors.burstTime && (
-                <p className="mt-1 text-sm text-destructive">{errors.burstTime}</p>
+                <p className="mt-1 text-sm text-destructive">
+                  {errors.burstTime}
+                </p>
               )}
             </div>
 
@@ -148,10 +166,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                 onChange={(e) => setPriority(e.target.value)}
                 min="0"
                 placeholder="Optional"
-                className={errors.priority ? 'border-destructive' : ''}
+                className={errors.priority ? "border-destructive" : ""}
               />
               {errors.priority && (
-                <p className="mt-1 text-sm text-destructive">{errors.priority}</p>
+                <p className="mt-1 text-sm text-destructive">
+                  {errors.priority}
+                </p>
               )}
             </div>
 
@@ -161,7 +181,9 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
             </div>
 
             <div className="flex gap-2">
-              <Button type="submit" className="flex-1">Update Process</Button>
+              <Button type="submit" className="flex-1">
+                Update Process
+              </Button>
               <Button
                 type="button"
                 variant="outline"
@@ -188,7 +210,7 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
       </CardHeader>
       <CardContent>
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-          <PopoverTrigger asChild>
+          <PopoverTrigger>
             <Button type="button" className="w-full mb-4">
               <Plus className="mr-2 h-4 w-4" />
               Add Process
@@ -206,10 +228,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                   step="0.1"
                   min="0"
                   placeholder="0"
-                  className={errors.arrivalTime ? 'border-destructive' : ''}
+                  className={errors.arrivalTime ? "border-destructive" : ""}
                 />
                 {errors.arrivalTime && (
-                  <p className="mt-1 text-sm text-destructive">{errors.arrivalTime}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.arrivalTime}
+                  </p>
                 )}
               </div>
 
@@ -223,10 +247,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                   step="0.1"
                   min="0.1"
                   placeholder="1"
-                  className={errors.burstTime ? 'border-destructive' : ''}
+                  className={errors.burstTime ? "border-destructive" : ""}
                 />
                 {errors.burstTime && (
-                  <p className="mt-1 text-sm text-destructive">{errors.burstTime}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.burstTime}
+                  </p>
                 )}
               </div>
 
@@ -239,10 +265,12 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                   onChange={(e) => setPriority(e.target.value)}
                   min="0"
                   placeholder="Optional"
-                  className={errors.priority ? 'border-destructive' : ''}
+                  className={errors.priority ? "border-destructive" : ""}
                 />
                 {errors.priority && (
-                  <p className="mt-1 text-sm text-destructive">{errors.priority}</p>
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.priority}
+                  </p>
                 )}
               </div>
 
@@ -251,7 +279,9 @@ export default function ProcessForm({ onAddProcess, editingProcess, onEditComple
                 <ColorPicker value={background} onChange={setBackground} />
               </div>
 
-              <Button type="submit" className="w-full">Add Process</Button>
+              <Button type="submit" className="w-full">
+                Add Process
+              </Button>
             </form>
           </PopoverContent>
         </Popover>

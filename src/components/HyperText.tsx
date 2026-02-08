@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
-import { cn } from '../utils/cn';
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { cn } from "../utils/cn";
 
 interface HyperTextProps {
   text: string;
@@ -11,7 +10,7 @@ interface HyperTextProps {
   animateOnLoad?: boolean;
 }
 
-const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -26,15 +25,10 @@ export default function HyperText({
   animateOnLoad = true,
   className,
 }: HyperTextProps) {
-  const [displayText, setDisplayText] = useState(text.split(''));
+  const [displayText, setDisplayText] = useState(text.split(""));
   const [trigger, setTrigger] = useState(false);
   const iterations = useRef(0);
   const isFirstRender = useRef(true);
-
-  const triggerAnimation = () => {
-    iterations.current = 0;
-    setTrigger(true);
-  };
 
   useEffect(() => {
     const interval = setInterval(
@@ -47,12 +41,12 @@ export default function HyperText({
         if (iterations.current < text.length) {
           setDisplayText((t) =>
             t.map((l, i) =>
-              l === ' '
+              l === " "
                 ? l
                 : i <= iterations.current
                   ? text[i]
-                  : alphabets[getRandomInt(26)]
-            )
+                  : alphabets[getRandomInt(26)],
+            ),
           );
           iterations.current = iterations.current + 0.1;
         } else {
@@ -60,16 +54,16 @@ export default function HyperText({
           clearInterval(interval);
         }
       },
-      duration / (text.length * 10)
+      duration / (text.length * 10),
     );
     return () => clearInterval(interval);
   }, [text, duration, trigger, animateOnLoad]);
 
   return (
-    <div className={cn('flex items-center justify-center', className)}>
+    <div className={cn("flex items-center justify-center", className)}>
       <AnimatePresence mode="wait">
         <motion.div
-          key={trigger ? 'animating' : 'static'}
+          key={trigger ? "animating" : "static"}
           className="flex flex-wrap items-center justify-center gap-1"
           {...framerProps}
         >

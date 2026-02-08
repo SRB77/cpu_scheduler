@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { GanttBlock, ProcessInput } from '../types/process';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { cn } from '../utils/cn';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import type { GanttBlock, ProcessInput } from "../types/process";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { cn } from "../utils/cn";
 
 interface GanttChartProps {
   ganttBlocks: GanttBlock[];
@@ -10,19 +10,22 @@ interface GanttChartProps {
 }
 
 const defaultColors = [
-  '#3b82f6', // blue
-  '#10b981', // green
-  '#f59e0b', // yellow
-  '#8b5cf6', // purple
-  '#ec4899', // pink
-  '#6366f1', // indigo
-  '#ef4444', // red
-  '#14b8a6', // teal
-  '#f97316', // orange
-  '#06b6d4', // cyan
+  "#3b82f6", // blue
+  "#10b981", // green
+  "#f59e0b", // yellow
+  "#8b5cf6", // purple
+  "#ec4899", // pink
+  "#6366f1", // indigo
+  "#ef4444", // red
+  "#14b8a6", // teal
+  "#f97316", // orange
+  "#06b6d4", // cyan
 ];
 
-export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartProps) {
+export default function GanttChart({
+  ganttBlocks,
+  processes = [],
+}: GanttChartProps) {
   const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
   processes.forEach((process, index) => {
     pidColorMap.set(
       process.pid,
-      process.background || defaultColors[index % defaultColors.length]
+      process.background || defaultColors[index % defaultColors.length],
     );
   });
 
@@ -76,7 +79,7 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
       scale: 1,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 200,
         damping: 15,
       },
@@ -84,7 +87,9 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
   };
 
   const uniquePids = Array.from(
-    new Set(ganttBlocks.map((block) => block.pid).filter((pid) => pid !== 'IDLE'))
+    new Set(
+      ganttBlocks.map((block) => block.pid).filter((pid) => pid !== "IDLE"),
+    ),
   );
 
   return (
@@ -97,7 +102,7 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
           <motion.div
             key={animationKey}
             className="flex items-start mb-4"
-            style={{ minWidth: 'max-content' }}
+            style={{ minWidth: "max-content" }}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -105,19 +110,19 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
             {ganttBlocks.map((block, index) => {
               const duration = block.endTime - block.startTime;
               const widthPercent = (duration / totalTime) * 100;
-              const isIdle = block.pid === 'IDLE';
+              const isIdle = block.pid === "IDLE";
               const backgroundColor = isIdle
-                ? '#9ca3af'
+                ? "#9ca3af"
                 : pidColorMap.get(block.pid) || defaultColors[0];
-              const isGradient = backgroundColor.includes('gradient');
+              const isGradient = backgroundColor.includes("gradient");
 
               return (
                 <motion.div
                   key={`${block.pid}-${index}-${block.startTime}`}
-                  variants={itemVariants}
+                  variants={itemVariants as any}
                   className={cn(
-                    'text-white border border-border flex flex-col items-center justify-center min-w-[60px] transition-all hover:opacity-90 hover:scale-105 cursor-pointer',
-                    !isGradient && 'shadow-md'
+                    "text-white border border-border flex flex-col items-center justify-center min-w-[60px] transition-all hover:opacity-90 hover:scale-105 cursor-pointer",
+                    !isGradient && "shadow-md",
                   )}
                   style={{
                     width: `${Math.max(widthPercent, 5)}%`,
@@ -156,11 +161,14 @@ export default function GanttChart({ ganttBlocks, processes = [] }: GanttChartPr
             <span className="text-sm font-medium">Legend:</span>
             {uniquePids.map((pid) => {
               const color = pidColorMap.get(pid) || defaultColors[0];
-              const isGradient = color.includes('gradient');
+              const isGradient = color.includes("gradient");
               return (
                 <div key={pid} className="flex items-center gap-2">
                   <div
-                    className={cn('w-4 h-4 rounded', !isGradient && 'border border-border')}
+                    className={cn(
+                      "w-4 h-4 rounded",
+                      !isGradient && "border border-border",
+                    )}
                     style={{ background: color }}
                   />
                   <span className="text-sm">{pid}</span>
