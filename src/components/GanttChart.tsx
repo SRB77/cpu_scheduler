@@ -65,11 +65,7 @@ export default function GanttChart({
     visible: {
       scaleX: 1,
       opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 150,
-        damping: 18,
-      },
+      transition: { type: "spring", stiffness: 100, damping: 20 } as const,
     },
   };
 

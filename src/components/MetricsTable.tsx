@@ -105,7 +105,9 @@ export default function MetricsTable({
                     const process = processes.find((p) => p.pid === metric.pid);
                     const color =
                       pidColorMap.get(metric.pid) || defaultColors[0];
-                    const isGradient = color.includes("gradient");
+                    const backgroundStyle = color.includes("gradient")
+                      ? { backgroundImage: color }
+                      : { backgroundColor: color };
 
                     return (
                       <tr
@@ -116,7 +118,7 @@ export default function MetricsTable({
                           <div className="flex items-center gap-2">
                             <div
                               className="w-3 h-3 rounded-full shrink-0"
-                              style={{ background: color }}
+                              style={backgroundStyle}
                             />
                             {metric.pid}
                           </div>

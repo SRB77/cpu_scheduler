@@ -150,6 +150,19 @@ function App() {
 
   const particleColor = resolvedTheme === "dark" ? "#ffffff" : "#000000";
 
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (simulationResult && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [simulationResult, resultsRef]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
       {/* Particles Background */}
@@ -229,7 +242,10 @@ function App() {
 
             {/* Results Section */}
             {simulationResult && (
-              <div className="space-y-6 animate-slide-up">
+              <div
+                ref={resultsRef}
+                className="space-y-6 animate-slide-up scroll-mt-8"
+              >
                 <GanttChart
                   ganttBlocks={simulationResult.ganttBlocks}
                   processes={processes}
