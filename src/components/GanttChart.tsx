@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { GanttBlock, ProcessInput } from "../types/process";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { cn } from "../utils/cn";
 
 interface GanttChartProps {
   ganttBlocks: GanttBlock[];
@@ -10,27 +9,27 @@ interface GanttChartProps {
 }
 
 const defaultColors = [
-  "#3b82f6", // blue
-  "#10b981", // green
-  "#f59e0b", // yellow
-  "#8b5cf6", // purple
-  "#ec4899", // pink
-  "#6366f1", // indigo
-  "#ef4444", // red
-  "#14b8a6", // teal
-  "#f97316", // orange
-  "#06b6d4", // cyan
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#8b5cf6",
+  "#ec4899",
+  "#6366f1",
+  "#ef4444",
+  "#14b8a6",
+  "#f97316",
+  "#06b6d4",
 ];
 
 export default function GanttChart({
   ganttBlocks,
   processes = [],
 }: GanttChartProps) {
-  const [animationKey, setAnimationKey] = useState(0);
-
-  useEffect(() => {
-    setAnimationKey((prev) => prev + 1);
-  }, [ganttBlocks]);
+  // Use a stable key derived from the gantt blocks content
+  const animationKey = useMemo(
+    () => JSON.stringify(ganttBlocks),
+    [ganttBlocks],
+  );
 
   if (ganttBlocks.length === 0) {
     return null;
@@ -48,60 +47,43 @@ export default function GanttChart({
   // Calculate total time
   const totalTime = ganttBlocks[ganttBlocks.length - 1]?.endTime || 0;
 
-  // Generate time markers
-  const markerInterval = totalTime > 20 ? 2 : 1;
-  const timeMarkers: number[] = [];
-  for (let i = 0; i <= totalTime; i += markerInterval) {
-    timeMarkers.push(i);
-  }
-  if (timeMarkers[timeMarkers.length - 1] !== totalTime) {
-    timeMarkers.push(totalTime);
-  }
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   };
 
   const itemVariants = {
     hidden: {
-      x: -50,
-      scale: 0.8,
+      scaleX: 0,
       opacity: 0,
     },
     visible: {
-      x: 0,
-      scale: 1,
+      scaleX: 1,
       opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 200,
-        damping: 15,
+        stiffness: 150,
+        damping: 18,
       },
     },
   };
 
-  const uniquePids = Array.from(
-    new Set(
-      ganttBlocks.map((block) => block.pid).filter((pid) => pid !== "IDLE"),
-    ),
-  );
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Gantt Chart</CardTitle>
+    <Card className="bg-card/80 backdrop-blur-sm">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl">Gantt Chart</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto pb-2">
+          {/* Gantt Bars */}
           <motion.div
             key={animationKey}
-            className="flex items-start mb-4"
+            className="flex items-stretch"
             style={{ minWidth: "max-content" }}
             variants={containerVariants}
             initial="hidden"
@@ -109,78 +91,70 @@ export default function GanttChart({
           >
             {ganttBlocks.map((block, index) => {
               const duration = block.endTime - block.startTime;
-              const widthPercent = (duration / totalTime) * 100;
+              const minWidth = Math.max(duration * 40, 50);
               const isIdle = block.pid === "IDLE";
               const backgroundColor = isIdle
-                ? "#9ca3af"
+                ? "transparent"
                 : pidColorMap.get(block.pid) || defaultColors[0];
               const isGradient = backgroundColor.includes("gradient");
 
               return (
                 <motion.div
                   key={`${block.pid}-${index}-${block.startTime}`}
-                  variants={itemVariants as any}
-                  className={cn(
-                    "text-white border border-border flex flex-col items-center justify-center min-w-[60px] transition-all hover:opacity-90 hover:scale-105 cursor-pointer",
-                    !isGradient && "shadow-md",
-                  )}
+                  variants={itemVariants}
+                  className={`flex flex-col items-center justify-center border border-border/50 text-white transition-all origin-left ${
+                    isIdle
+                      ? "bg-transparent border-dashed"
+                      : "shadow-sm hover:shadow-md hover:brightness-110"
+                  }`}
                   style={{
-                    width: `${Math.max(widthPercent, 5)}%`,
-                    background: backgroundColor,
+                    width: `${minWidth}px`,
+                    minHeight: "48px",
+                    background: isIdle ? "transparent" : backgroundColor,
+                    ...(isGradient ? {} : {}),
                   }}
                   title={`${block.pid}: ${block.startTime} - ${block.endTime}`}
                 >
-                  <div className="font-semibold text-sm py-2">{block.pid}</div>
-                  <div className="text-xs pb-1">{block.startTime}</div>
+                  <div
+                    className={`font-semibold text-sm ${isIdle ? "text-muted-foreground" : ""}`}
+                  >
+                    {isIdle ? "IDLE" : block.pid}
+                  </div>
                 </motion.div>
               );
             })}
-            {ganttBlocks.length > 0 && (
-              <div className="text-sm text-muted-foreground ml-2 pt-2">
-                {ganttBlocks[ganttBlocks.length - 1].endTime}
-              </div>
-            )}
           </motion.div>
 
-          {/* Time markers */}
+          {/* Time Scale */}
           <motion.div
-            className="flex justify-between text-xs text-muted-foreground mt-2"
+            className="flex"
+            style={{ minWidth: "max-content" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.4 }}
           >
-            {timeMarkers.map((time) => (
-              <span key={time}>{time}</span>
-            ))}
-          </motion.div>
-        </div>
+            {ganttBlocks.map((block, index) => {
+              const duration = block.endTime - block.startTime;
+              const minWidth = Math.max(duration * 40, 50);
 
-        {/* Legend */}
-        {uniquePids.length > 0 && (
-          <div className="mt-6 flex flex-wrap gap-4 items-center">
-            <span className="text-sm font-medium">Legend:</span>
-            {uniquePids.map((pid) => {
-              const color = pidColorMap.get(pid) || defaultColors[0];
-              const isGradient = color.includes("gradient");
               return (
-                <div key={pid} className="flex items-center gap-2">
-                  <div
-                    className={cn(
-                      "w-4 h-4 rounded",
-                      !isGradient && "border border-border",
-                    )}
-                    style={{ background: color }}
-                  />
-                  <span className="text-sm">{pid}</span>
+                <div
+                  key={`time-${index}`}
+                  className="flex items-start"
+                  style={{ width: `${minWidth}px` }}
+                >
+                  <span className="text-xs text-muted-foreground pt-1 -ml-1">
+                    {block.startTime}
+                  </span>
                 </div>
               );
             })}
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-400 rounded border border-border" />
-              <span className="text-sm">IDLE</span>
-            </div>
-          </div>
-        )}
+            {/* Final end time */}
+            <span className="text-xs text-muted-foreground pt-1 -ml-1">
+              {totalTime}
+            </span>
+          </motion.div>
+        </div>
       </CardContent>
     </Card>
   );
