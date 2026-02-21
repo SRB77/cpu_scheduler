@@ -12,7 +12,7 @@ interface SimulationViewProps {
   processes: ProcessInput[];
   selectedAlgorithm: string;
   quantum: number;
-  simulationResult: AlgorithmResult;
+  simulationResult: AlgorithmResult | null;
 }
 
 export default function SimulationView({
@@ -25,13 +25,14 @@ export default function SimulationView({
     "visualise",
   );
 
+  const result = simulationResult || { ganttBlocks: [], metrics: [] };
+
   // Playback state
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const maxTime =
-    simulationResult.ganttBlocks.length > 0
-      ? simulationResult.ganttBlocks[simulationResult.ganttBlocks.length - 1]
-          .endTime
+    result.ganttBlocks.length > 0
+      ? result.ganttBlocks[result.ganttBlocks.length - 1].endTime
       : 0;
 
   const timerRef = useRef<number | null>(null);
@@ -115,12 +116,30 @@ export default function SimulationView({
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col gap-6 flex-1 min-h-0"
           >
-            {/* Visualiser Top: Ready Queue & CPU */}
-            <div className="shrink-0">
+            <div className="shrink-0 relative overflow-hidden">
+              {/* Overlay for inactive state */}
+              {!simulationResult && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center backdrop-blur-[2px] bg-background/40">
+                  <div className="bg-background border border-border/50 shadow-md p-4 rounded-xl flex items-center gap-3">
+                    <div className="p-2 bg-muted rounded-full">
+                      <Play className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-sm">
+                        No Active Simulation
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Add processes and click run
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <ReadyQueueView
                 currentTime={currentTime}
                 processes={processes}
-                ganttBlocks={simulationResult.ganttBlocks}
+                ganttBlocks={result.ganttBlocks}
               />
             </div>
 
@@ -175,35 +194,23 @@ export default function SimulationView({
                 />
               </div>
 
-              {/* Timeline (Gantt Chart inside wrapper to indicate scrubber) */}
+              {/* Timeline (Gantt Chart handles scrubber internally) */}
               <div className="relative px-2">
                 <GanttChart
-                  ganttBlocks={simulationResult.ganttBlocks}
+                  ganttBlocks={result.ganttBlocks}
                   processes={processes}
+                  currentTime={currentTime}
+                  maxTime={maxTime}
                 />
-                {/* Scrubber overlay */}
-                {maxTime > 0 && (
-                  <div className="absolute inset-y-0 left-2 right-2 pointer-events-none mt-[60px] pb-6">
-                    <div
-                      className="absolute top-0 bottom-0 w-0.5 bg-primary/70 z-10 transition-all duration-300 ease-linear shadow-[0_0_8px_rgba(59,130,246,0.8)]"
-                      style={{
-                        left: `min(calc(${(currentTime / maxTime) * 100}% + 24px), 100%)`,
-                        height: "80%",
-                      }}
-                    >
-                      <div className="absolute -top-1 -left-1.5 w-3.5 h-3.5 rounded-full bg-primary ring-2 ring-background z-20" />
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
             {/* Metrics Table */}
             <div className="flex-1 overflow-y-auto">
               <MetricsTable
-                metrics={simulationResult.metrics}
+                metrics={result.metrics}
                 processes={processes}
-                ganttBlocks={simulationResult.ganttBlocks}
+                ganttBlocks={result.ganttBlocks}
               />
             </div>
           </motion.div>
