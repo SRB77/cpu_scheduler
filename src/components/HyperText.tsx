@@ -60,7 +60,12 @@ export default function HyperText({
   }, [text, duration, trigger, animateOnLoad]);
 
   return (
-    <div className={cn("flex items-center justify-center", className)}>
+    <div
+      className={cn(
+        "flex items-center justify-center whitespace-pre",
+        className,
+      )}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={trigger ? "animating" : "static"}
@@ -75,7 +80,7 @@ export default function HyperText({
               animate={{ opacity: 1 }}
               transition={{ duration: 0.1 }}
             >
-              {letter.toUpperCase()}
+              {letter === " " ? "\u00A0" : letter.toUpperCase()}
             </motion.span>
           ))}
         </motion.div>
