@@ -219,56 +219,12 @@ function App() {
 
             {/* Right Panel — Results / Visualization Stack */}
             <div className="lg:col-span-2 flex flex-col gap-6 pt-1">
-              {simulationResult ? (
-                <SimulationView
-                  processes={processes}
-                  selectedAlgorithm={selectedAlgorithm}
-                  quantum={quantum}
-                  simulationResult={simulationResult}
-                />
-              ) : (
-                <div className="flex-1 flex flex-col gap-6 opacity-70">
-                  <div className="flex justify-center shrink-0">
-                    <div className="relative flex p-1 bg-muted/20 rounded-full border border-border/30 w-[200px] h-10 animate-pulse" />
-                  </div>
-
-                  <div className="flex flex-col gap-6 flex-1 min-h-0">
-                    <div className="flex flex-col md:flex-row gap-4 mb-2 shrink-0">
-                      <div className="flex-1 rounded-xl bg-muted/10 border border-dashed border-border/50 h-[100px] animate-pulse" />
-                      <div className="w-full md:w-[200px] rounded-xl bg-muted/10 border border-dashed border-border/50 h-[100px] animate-pulse" />
-                    </div>
-
-                    <div className="rounded-xl bg-muted/10 border border-border/20 h-[150px] animate-pulse shrink-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="mb-3 p-3 bg-muted/20 rounded-full inline-block">
-                          <svg
-                            className="h-6 w-6 text-muted-foreground/40"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                            />
-                          </svg>
-                        </div>
-                        <h3 className="text-base font-medium text-foreground/70">
-                          No active simulation
-                        </h3>
-                        <p className="mt-1 text-xs text-muted-foreground max-w-[250px] mx-auto">
-                          Add processes in the configuration panel on the left
-                          and click "Start Simulation"
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex-1 rounded-xl bg-muted/10 border border-border/20 min-h-[150px] animate-pulse" />
-                  </div>
-                </div>
-              )}
+              <SimulationView
+                processes={processes}
+                selectedAlgorithm={selectedAlgorithm}
+                quantum={quantum}
+                simulationResult={simulationResult}
+              />
             </div>
           </div>
         </main>
