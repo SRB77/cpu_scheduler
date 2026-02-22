@@ -13,6 +13,7 @@ import { fcfs } from "./algorithms/fcfs";
 import { sjf } from "./algorithms/sjf";
 import { roundRobin } from "./algorithms/roundRobin";
 import { priority } from "./algorithms/priority";
+import { priorityPreemptive } from "./algorithms/priorityPreemptive";
 import { srtf } from "./algorithms/srtf";
 import { getUrlState, updateUrlState } from "./utils/urlState";
 import { generateRandomColor } from "./utils/colors";
@@ -102,11 +103,14 @@ function App() {
       return;
     }
 
-    if (selectedAlgorithm === "priority") {
+    if (
+      selectedAlgorithm === "priority" ||
+      selectedAlgorithm === "priorityPreemptive"
+    ) {
       const missingPriority = processes.some((p) => p.priority === undefined);
       if (missingPriority) {
         toast.error(
-          "Please add priority for all processes when using Priority algorithm.",
+          "Please add priority for all processes when using a Priority algorithm.",
         );
         return;
       }
@@ -127,6 +131,9 @@ function App() {
           break;
         case "priority":
           result = priority(processes);
+          break;
+        case "priorityPreemptive":
+          result = priorityPreemptive(processes);
           break;
         case "srtf":
           result = srtf(processes);
@@ -229,6 +236,30 @@ function App() {
           </div>
         </main>
       </div>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-sm text-foreground/60 w-full shrink-0 relative z-10">
+        <p className="flex items-center justify-center gap-2">
+          Created by
+          <a
+            href="https://github.com/srb77"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary hover:underline transition-colors"
+          >
+            Soumyaranjan
+          </a>
+          <span>&</span>
+          <a
+            href="https://github.com/nox-pie"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primary hover:underline transition-colors"
+          >
+            Prashant
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

@@ -27,18 +27,21 @@ const algorithms = [
   { value: "fcfs", label: "First Come First Serve (FCFS)" },
   { value: "sjf", label: "Shortest Job First (SJF)" },
   { value: "roundRobin", label: "Round Robin (RR)" },
-  { value: "priority", label: "Priority" },
+  { value: "priority", label: "Priority (Non-Preemptive)" },
+  { value: "priorityPreemptive", label: "Priority (Preemptive)" },
   { value: "srtf", label: "Shortest Remaining Time First (SRTF)" },
 ];
 
 const algorithmDescriptions: Record<string, string> = {
-  fcfs: "Processes are executed in the order they arrive. Simple but may cause long waiting times.",
-  sjf: "Executes the shortest job first. Minimizes average waiting time but may cause starvation.",
+  fcfs: "The simplest method! Like a queue at a grocery store, the first process to arrive is the first one served until it finishes. It's perfectly fair, but extremely long jobs can severely delay shorter ones behind them.",
+  sjf: "Looks at all waiting jobs and smartly picks the one that will finish the fastest. This keeps the average waiting time very low, but longer jobs might get stuck waiting forever in the queue.",
   roundRobin:
-    "Each process gets a fixed time quantum in circular order. Fair and responsive for time-sharing systems.",
+    "Takes turns! Every process gets a small, equal slice of CPU time (called a quantum). If it doesn't finish, it goes to the back of the line. Excellent for keeping computers feeling responsive.",
   priority:
-    "Processes are executed based on priority. Lower number means higher priority. May cause starvation.",
-  srtf: "Preemptive version of SJF. Always executes the process with the shortest remaining time.",
+    "Important tasks go first! Processes are assigned a priority (lower number = more important). Once a task starts running, it cannot be interrupted until it's completely done.",
+  priorityPreemptive:
+    "Highly important tasks go first, and they can interrupt! If an extremely important task arrives while a less important one is running, the CPU immediately switches to the new critical task.",
+  srtf: "The preemptive version of SJF. If a new job arrives that can finish faster than the one currently running, the CPU stops the current job and switches to the faster one.",
 };
 
 export default function ConfigurationPanel({
