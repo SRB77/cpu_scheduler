@@ -1,4 +1,9 @@
-import type { ProcessInput, AlgorithmResult, GanttBlock, ProcessMetrics } from '../types/process';
+import type {
+  ProcessInput,
+  AlgorithmResult,
+  GanttBlock,
+  ProcessMetrics,
+} from "../types/process";
 
 export function srtf(processes: ProcessInput[]): AlgorithmResult {
   if (processes.length === 0) {
@@ -61,7 +66,7 @@ export function srtf(processes: ProcessInput[]): AlgorithmResult {
       if (processIndex < remainingProcesses.length) {
         const nextProcess = remainingProcesses[processIndex];
         ganttBlocks.push({
-          pid: 'IDLE',
+          pid: "IDLE",
           startTime: currentTime,
           endTime: nextProcess.arrivalTime,
         });
@@ -133,8 +138,8 @@ export function srtf(processes: ProcessInput[]): AlgorithmResult {
 
     if (processBlocks.length > 0) {
       const completionTime = processBlocks[processBlocks.length - 1].endTime;
-      const waitingTime = (processData.firstStartTime || 0) - process.arrivalTime;
       const turnaroundTime = completionTime - process.arrivalTime;
+      const waitingTime = turnaroundTime - process.burstTime;
 
       metrics.push({
         pid: process.pid,
