@@ -1,186 +1,158 @@
-# 🖥️ CPU Scheduling Algorithm Simulator
+<div align="center">
+  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/cpu.svg" alt="FLUX Logo" width="120" height="120" />
+  <h1>FLUX: CPU Scheduling Simulator</h1>
+  <p><strong>A Modern, Interactive Web Application for Visualizing Operating System Scheduling Algorithms</strong></p>
 
-A modern, interactive web application for visualizing and understanding CPU scheduling algorithms. Built as an educational tool for Operating Systems courses, this simulator helps students grasp how different scheduling algorithms work through real-time Gantt chart visualization and performance metrics.
+  <p>
+    <a href="#-about-flux">About</a> •
+    <a href="#-features">Features</a> •
+    <a href="#-algorithms">Algorithms</a> •
+    <a href="#-project-structure">Architecture</a> •
+    <a href="#-getting-started">Getting Started</a> •
+    <a href="#-contributors">Contributors</a>
+  </p>
+</div>
 
+---
 
+## 📖 About FLUX
+
+**FLUX** is a professionally crafted, educational CPU Scheduling Visualizer built to help students, developers, and OS enthusiasts deeply understand how modern Operating Systems handle process scheduling.
+
+Created by **SRA** (Soumya Ranjan), FLUX bridges the gap between theoretical OS concepts and practical intuition through real-time Gantt chart visualization, performance metrics generation, and an extensive interactive "Learn" module.
 
 ## ✨ Features
 
-### 🔄 Scheduling Algorithms
-- **FCFS (First Come First Serve)** - Non-preemptive, processes executed in arrival order
-- **SJF (Shortest Job First)** - Non-preemptive, shortest burst time executed first
-- **SRTF (Shortest Remaining Time First)** - Preemptive version of SJF
-- **Priority Scheduling** - Non-preemptive, highest priority (lowest number) first
-- **Round Robin** - Preemptive, time-quantum based circular scheduling
+### 🖥️ Core Simulator
 
-### 📊 Visualization & Metrics
-- **Interactive Gantt Chart** - Color-coded timeline showing process execution
-- **Performance Metrics Table** - Displays for each process:
-  - Waiting Time
-  - Turnaround Time
-  - Completion Time
+- **Interactive Gantt Charts:** Color-coded timelines showing process execution, context switching, and idle states dynamically.
+- **Real-Time Metrics Engine:** Instant calculation of Arrival Time (AT), Burst Time (BT), Completion Time (CT), Turnaround Time (TAT), and Waiting Time (WT).
+- **Random Process Generator:** Instantly populate the ready queue with randomized processes to quickly test edge cases.
+- **State Serialization:** Share your exact simulation setup with others via URL encoding.
 
-### 🎨 User Experience
-- **Dark/Light Theme** - Toggle between themes for comfortable viewing
-- **Responsive Design** - Works seamlessly on desktop and mobile devices
-- **Random Process Generator** - Quickly generate test processes
-- **URL State Sharing** - Share your simulation setup via URL
-- **Toast Notifications** - Real-time feedback on actions
-- **Smooth Animations** - Built with Framer Motion
+### 📚 Dedicated Education Module
+
+- **Comprehensive Docs:** A beautifully formatted, MDN-style `/learn` page featuring deep-dives into the mathematical logic, advantages, disadvantages, and trade-offs of each algorithm.
+- **Scroll-Spy Table of Contents:** Context-aware sidebars that highlight your reading progress.
+
+### 🎨 Premium User Experience
+
+- **Theme Support:** Fluid Light and Dark mode toggling via `ThemeContext`.
+- **Micro-Animations:** Powered by `framer-motion` for a silky-smooth, responsive desktop and mobile experience.
+- **Instant Feedback:** Integrated `react-toastify` for real-time validation alerts.
+
+## 🔄 Supported Algorithms
+
+1. **FCFS (First Come First Serve)**
+   - Strictly Non-preemptive. Processes are executed exactly in their order of arrival. Demonstrates the infamous _Convoy Effect_.
+2. **SJF (Shortest Job First)**
+   - Non-preemptive. Executes the process with the smallest execution time next. Provably optimal for minimizing average waiting time.
+3. **SRTF (Shortest Remaining Time First)**
+   - The highly preemptive version of SJF. Constantly monitors the ready queue to interrupt current processes if a shorter job arrives.
+4. **Round Robin (RR)**
+   - Preemptive and designed for time-sharing systems. Allocates a fixed _Time Quantum_ to each process in a circular queue.
+5. **Priority Scheduling**
+   - Supports both **Preemptive** and **Non-Preemptive** variants. Schedules processes based on an assigned priority integer.
+
+## 📁 Project Structure
+
+FLUX is built with React 19, TypeScript, Vite, and Tailwind CSS. The codebase is strictly modularized for maintainability and scalability.
+
+```text
+cpu_scheduler/
+├── src/
+│   ├── algorithms/          # Core mathematical logic for OS scheduling
+│   │   ├── fcfs.ts
+│   │   ├── priority.ts      # Handles both Preemptive & Non-Preemptive
+│   │   ├── roundRobin.ts
+│   │   ├── sjf.ts
+│   │   └── srtf.ts
+│   │
+│   ├── components/          # Reusable React UI Components
+│   │   ├── landing/         # Components specific to the Landing Page
+│   │   ├── ui/              # Shadcn/Radix primitive UI elements
+│   │   ├── AlgorithmSelector.tsx
+│   │   ├── GanttChart.tsx   # Visualization engine
+│   │   ├── MetricsTable.tsx # Data presentation
+│   │   └── ProcessForm.tsx  # Input validation & handling
+│   │
+│   ├── contexts/            # Global State Management
+│   │   └── ThemeContext.tsx # Handles Dark/Light mode preferences
+│   │
+│   ├── data/                # Static Data Stores
+│   │   └── learnContent.tsx # High-density educational text for /learn
+│   │
+│   ├── pages/               # Main Route Views
+│   │   ├── LandingPage.tsx  # Hero section & entry point
+│   │   ├── LearnPage.tsx    # MDN-style documentation view
+│   │   └── SimulatorPage.tsx# Core CPU Visualizer app
+│   │
+│   ├── types/               # Strict TypeScript Interfaces
+│   │   └── process.ts       # Type definitions for PCB, GanttBlocks, etc.
+│   │
+│   ├── utils/
+│   │   ├── colors.ts        # HSL color generation for Gantt segments
+│   │   ├── cn.ts            # Tailwind class-merge utility
+│   │   └── urlState.ts      # URL serialization/deserialization
+│   │
+│   ├── App.tsx              # Router Configuration (react-router-dom)
+│   └── main.tsx             # React DOM root entry
+│
+├── public/                  # Static assets & favicons
+├── package.json             # NPM dependencies
+├── tailwind.config.js       # Design system tokens
+└── vite.config.ts           # Bundler configuration
+```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** (v18.0.0 or higher)
 - **npm** (v9.0.0 or higher) or **yarn**
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/SRB77/cpu_scheduler.git
    cd cpu_scheduler
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start the development server**
+
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
-   Navigate to `http://localhost:5173`
+4. **Launch**
+   Open your browser and navigate to `http://localhost:5173` to experience FLUX.
 
-### Build for Production
+### Build and Deploy
+
+To compile FLUX for production:
 
 ```bash
 npm run build
-```
-
-The production-ready files will be in the `dist/` directory.
-
-### Preview Production Build
-
-```bash
 npm run preview
 ```
 
-## 📁 Project Structure
-
-```
-cpuvisualiser/
-├── src/
-│   ├── algorithms/          # Scheduling algorithm implementations
-│   │   ├── fcfs.ts          # First Come First Serve
-│   │   ├── sjf.ts           # Shortest Job First
-│   │   ├── srtf.ts          # Shortest Remaining Time First
-│   │   ├── priority.ts      # Priority Scheduling
-│   │   └── roundRobin.ts    # Round Robin
-│   │
-│   ├── components/          # React components
-│   │   ├── ui/              # Reusable UI components (Button, Card, Input, etc.)
-│   │   ├── AlgorithmSelector.tsx
-│   │   ├── GanttChart.tsx   # Gantt chart visualization
-│   │   ├── MetricsTable.tsx # Performance metrics display
-│   │   ├── ProcessForm.tsx  # Add/edit process form
-│   │   ├── ProcessTable.tsx # Process list display
-│   │   ├── RandomGenerator.tsx
-│   │   └── ShareButton.tsx
-│   │
-│   ├── contexts/            # React contexts
-│   │   └── ThemeContext.tsx # Dark/Light theme management
-│   │
-│   ├── types/               # TypeScript type definitions
-│   │   └── process.ts       # Process, GanttBlock, Metrics interfaces
-│   │
-│   ├── utils/               # Utility functions
-│   │   ├── cn.ts            # Classname utility
-│   │   ├── colors.ts        # Color generation
-│   │   └── urlState.ts      # URL state management
-│   │
-│   ├── App.tsx              # Main application component
-│   ├── main.tsx             # Application entry point
-│   └── index.css            # Global styles
-│
-├── public/                  # Static assets
-├── index.html               # HTML template
-├── package.json             # Dependencies and scripts
-├── tailwind.config.js       # Tailwind CSS configuration
-├── tsconfig.json            # TypeScript configuration
-└── vite.config.ts           # Vite configuration
-```
-
-## 🎯 How to Use
-
-1. **Add Processes**
-   - Enter Process ID, Arrival Time, and Burst Time
-   - For Priority algorithm, also enter Priority value (lower = higher priority)
-   - Click "Add Process" to add to the queue
-
-2. **Select Algorithm**
-   - Choose from FCFS, SJF, SRTF, Priority, or Round Robin
-   - For Round Robin, set the Time Quantum value
-
-3. **Run Simulation**
-   - Click "Run Simulation" to execute the algorithm
-   - View the Gantt Chart for visual representation
-   - Check the Metrics Table for performance statistics
-
-4. **Additional Features**
-   - Use "Random Generate" for quick testing
-   - Use "Share" to copy the URL with your current setup
-   - Toggle theme using the sun/moon icon
-   - Edit or delete processes from the table
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| **React 19** | UI Framework |
-| **TypeScript** | Type Safety |
-| **Vite** | Build Tool & Dev Server |
-| **Tailwind CSS** | Styling |
-| **Framer Motion** | Animations |
-| **Lucide React** | Icons |
-| **React Toastify** | Notifications |
-
-## 📚 Algorithm Details
-
-### FCFS (First Come First Serve)
-- **Type:** Non-preemptive
-- **Logic:** Processes are executed in order of their arrival time
-- **Pros:** Simple to implement
-- **Cons:** Can cause convoy effect (long processes block short ones)
-
-### SJF (Shortest Job First)
-- **Type:** Non-preemptive
-- **Logic:** Process with shortest burst time is selected next
-- **Pros:** Optimal average waiting time
-- **Cons:** Potential starvation for long processes
-
-### SRTF (Shortest Remaining Time First)
-- **Type:** Preemptive
-- **Logic:** Process with shortest remaining time runs
-- **Pros:** Lower average waiting time than SJF
-- **Cons:** Higher overhead due to frequent context switches
-
-### Priority Scheduling
-- **Type:** Non-preemptive
-- **Logic:** Process with highest priority (lowest number) runs first
-- **Pros:** Important processes get CPU first
-- **Cons:** Starvation possible for low priority processes
-
-### Round Robin
-- **Type:** Preemptive
-- **Logic:** Each process gets a fixed time quantum in circular order
-- **Pros:** Fair allocation, no starvation
-- **Cons:** Performance depends on quantum selection
+The optimized bundles will be generated in the `/dist` directory.
 
 ## 👥 Contributors
 
-- **Soumya Ranjan** - [@SRB77](https://github.com/SRB77)
-- **Prashant** - [@nox-pie](https://github.com/nox-pie)
+- **SRB (Soumyaranjan)** - _Creator & Lead Developer_ - [@SRB77](https://github.com/SRB77)
+- **Prashant** - _Contributor_ - [@nox-pie](https://github.com/nox-pie)
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by Soumyranjan and prashant</sub>
+</div>
