@@ -1,6 +1,14 @@
-import type { ProcessInput, AlgorithmResult, GanttBlock, ProcessMetrics } from '../types/process';
+import type {
+  ProcessInput,
+  AlgorithmResult,
+  GanttBlock,
+  ProcessMetrics,
+} from "../types/process";
 
-export function roundRobin(processes: ProcessInput[], quantum: number): AlgorithmResult {
+export function roundRobin(
+  processes: ProcessInput[],
+  quantum: number,
+): AlgorithmResult {
   if (processes.length === 0 || quantum <= 0) {
     return {
       ganttBlocks: [],
@@ -13,7 +21,7 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
   let currentTime = 0;
 
   // Create a copy of processes with remaining burst time
-  const processQueue = processes.map(p => ({
+  const processQueue = processes.map((p) => ({
     ...p,
     remainingBurstTime: p.burstTime,
     firstStartTime: -1, // Track when process first starts
@@ -33,7 +41,7 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
   while (
     processIndex < processQueue.length ||
     readyQueue.length > 0 ||
-    processQueue.some(p => p.remainingBurstTime > 0)
+    processQueue.some((p) => p.remainingBurstTime > 0)
   ) {
     // Add processes that have arrived to ready queue
     while (
@@ -49,7 +57,7 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
       if (processIndex < processQueue.length) {
         const nextProcess = processQueue[processIndex];
         ganttBlocks.push({
-          pid: 'IDLE',
+          pid: "IDLE",
           startTime: currentTime,
           endTime: nextProcess.arrivalTime,
         });
@@ -67,7 +75,10 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
       }
 
       const startTime = currentTime;
-      const executionTime = Math.min(currentProcess.remainingBurstTime, quantum);
+      const executionTime = Math.min(
+        currentProcess.remainingBurstTime,
+        quantum,
+      );
       const endTime = startTime + executionTime;
 
       ganttBlocks.push({
@@ -96,16 +107,17 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
   }
 
   // Calculate metrics for each process
-  processes.forEach(process => {
-    const processData = processQueue.find(p => p.pid === process.pid);
+  processes.forEach((process) => {
+    const processData = processQueue.find((p) => p.pid === process.pid);
     if (!processData) return;
 
-    const processBlocks = ganttBlocks.filter(b => b.pid === process.pid);
-    
+    const processBlocks = ganttBlocks.filter((b) => b.pid === process.pid);
+
     if (processBlocks.length > 0) {
       const completionTime = processBlocks[processBlocks.length - 1].endTime;
-      const waitingTime = (processData.firstStartTime || 0) - process.arrivalTime;
+
       const turnaroundTime = completionTime - process.arrivalTime;
+      const waitingTime = turnaroundTime - process.burstTime;
 
       metrics.push({
         pid: process.pid,
@@ -120,8 +132,8 @@ export function roundRobin(processes: ProcessInput[], quantum: number): Algorith
     ganttBlocks,
     metrics: metrics.sort((a, b) => {
       // Sort metrics by original process order
-      const aIndex = processes.findIndex(p => p.pid === a.pid);
-      const bIndex = processes.findIndex(p => p.pid === b.pid);
+      const aIndex = processes.findIndex((p) => p.pid === a.pid);
+      const bIndex = processes.findIndex((p) => p.pid === b.pid);
       return aIndex - bIndex;
     }),
   };
