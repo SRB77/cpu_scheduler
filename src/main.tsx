@@ -1,16 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import './index.css'
-import App from './App.tsx'
-import { ThemeProvider } from './contexts/ThemeContext'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./index.css";
+import App from "./App.tsx";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 
 if (!rootElement) {
-  throw new Error('Root element not found');
+  throw new Error("Root element not found");
 }
 
 createRoot(rootElement).render(
@@ -19,18 +19,16 @@ createRoot(rootElement).render(
       <ThemeProvider>
         <App />
         <ToastContainer
-          position="top-center"
-          autoClose={3000}
+          position="top-right"
+          autoClose={100}
           hideProgressBar={false}
-          newestOnTop={false}
+          newestOnTop
           closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="colored"
+          theme="light"
         />
       </ThemeProvider>
     </ErrorBoundary>
   </StrictMode>,
-)
+);
